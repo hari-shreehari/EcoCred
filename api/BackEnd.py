@@ -256,7 +256,4 @@ async def graph_analytics(token: str = Depends(oauth2_scheme)):
 
 
 
-# Run the application with uvicorn
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
