@@ -7,7 +7,6 @@ import bcrypt
 import jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
-import matplotlib.pyplot as plt
 import io
 import base64
 from fastapi.responses import HTMLResponse
@@ -198,9 +197,7 @@ async def analyze_and_respond(query: Query):
     
     return {"response": result}
 
-
-#graphs
-@app.get("/graph_analytics/", response_class=HTMLResponse)
+@app.get("/graph_analytics/", response_class=JSONResponse)
 async def graph_analytics(token: str = Depends(oauth2_scheme)):
     # Verify and decode the token
     payload = verify_access_token(token)
@@ -234,37 +231,29 @@ async def graph_analytics(token: str = Depends(oauth2_scheme)):
     # Extract scores and corresponding months
     months = ["Jan-Feb", "Mar-Apr", "May-Jun", "Jul-Aug", "Sep-Oct", "Nov-Dec"]
 
-    green_scores = [float(green_score_response.data[0][month]) for month in months]
-    electricity = [float(electricity_response.data[0][month]) for month in months]
-    water = [float(water_response.data[0][month]) for month in months]
-    lpg = [float(lpg_response.data[0][month]) for month in months]
-    recycle_points = [float(recycle_score_response.data[0][month]) for month in months]
+    green_scores = {month: float(green_score_response.data[0][month]) for month in months}
+    electricity = {month: float(electricity_response.data[0][month]) for month in months}
+    water = {month: float(water_response.data[0][month]) for month in months}
+    lpg = {month: float(lpg_response.data[0][month]) for month in months}
+    recycle_points = {month: float(recycle_score_response.data[0][month]) for month in months}
 
-    # Plot the data
-    plt.figure(figsize=(14, 8))
-    plt.plot(months, green_scores, marker='o', linestyle='-', color='b', label='Green Score')
-    plt.plot(months, electricity, marker='o', linestyle='--', color='r', label='Electricity Consumption')
-    plt.plot(months, water, marker='o', linestyle='-.', color='g', label='Water Consumption')
-    plt.plot(months, lpg, marker='o', linestyle=':', color='m', label='LPG Consumption')
-    plt.plot(months, recycle_points, marker='o', linestyle='-', color='c', label='Recycle Points')
+    # Construct the response data
+    response_data = {
+        "status": "success",
+        "data": {
+            "months": months,
+            "green_scores": green_scores,
+            "electricity": electricity,
+            "water": water,
+            "lpg": lpg,
+            "recycle_points": recycle_points
+        }
+    }
 
-    plt.title('Bimonthly Environmental Metrics')
-    plt.xlabel('Months')
-    plt.ylabel('Values')
-    plt.legend()
-    plt.grid(True)
+    # Return the data as JSON
+    return JSONResponse(content=response_data)
 
-    # Save the plot to a bytes buffer
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
 
-    # Encode the bytes as base64 and embed in HTML
-    img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
-    img_html = f'<img src="data:image/png;base64,{img_base64}" />'
-
-    # Return the image embedded in HTML
-    return HTMLResponse(content=img_html)
 
 # Run the application with uvicorn
 if __name__ == "__main__":
