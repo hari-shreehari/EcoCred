@@ -10,6 +10,7 @@ from fastapi.security import OAuth2PasswordBearer
 import io
 import base64
 from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 import os
 
