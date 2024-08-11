@@ -65,7 +65,7 @@ def verify_access_token(token: str):
 
 
 #Account Creation
-@app.post("/create_account/")
+@app.post("/api/create_account/")
 async def submit_data(user_data: UserData):
     last_user = supabase.table("Users").select("User_ID").order("User_ID", desc=True).limit(1).execute()
     
@@ -96,7 +96,7 @@ async def submit_data(user_data: UserData):
 
 
 #Sign_in
-@app.post("/sign_in/")
+@app.post("/api/sign_in/")
 async def sign_in(sign_in_data: SignInData):
     response = supabase.table("Users").select("Email", "Password", "User_ID").eq("Email", sign_in_data.email).execute()
     
@@ -112,7 +112,7 @@ async def sign_in(sign_in_data: SignInData):
         return {"status": "failure", "message": "Incorrect password"}
 
 #Home
-@app.get("/home/")
+@app.get("/api/home/")
 async def read_users_me(token: str = Depends(oauth2_scheme)):
     # Verify and decode the token
     payload = verify_access_token(token)
@@ -170,7 +170,7 @@ session_state = {"initialized": False}
 class Query(BaseModel):
     message: str
 
-@app.post("/chat/")
+@app.post("/api/chat/")
 async def analyze_and_respond(query: Query):
     if not session_state["initialized"]:
         initial_message = "Just analyze this: My green score is based on my electricity, water, and LPG consumption. Don't respond now. But I will be talking about it from now"
@@ -198,7 +198,7 @@ async def analyze_and_respond(query: Query):
     
     return {"response": result}
 
-@app.get("/graph_analytics/", response_class=JSONResponse)
+@app.get("/api/graph_analytics/", response_class=JSONResponse)
 async def graph_analytics(token: str = Depends(oauth2_scheme)):
     # Verify and decode the token
     payload = verify_access_token(token)
@@ -253,7 +253,3 @@ async def graph_analytics(token: str = Depends(oauth2_scheme)):
 
     # Return the data as JSON
     return JSONResponse(content=response_data)
-
-
-
-
