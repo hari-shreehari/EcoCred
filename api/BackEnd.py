@@ -45,7 +45,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"GreenFinTech": "RBiH+IITj"}
 
 class UserData(BaseModel):
     name: str
