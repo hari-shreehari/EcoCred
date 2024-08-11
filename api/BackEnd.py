@@ -11,8 +11,10 @@ import io
 import base64
 from fastapi.responses import HTMLResponse
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+
 
 # Load environment variables from Keys.env
 load_dotenv("Keys.env")
@@ -31,6 +33,19 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],  # Allow only GET and POST methods
+    allow_headers=["*"],  # Allow all headers
+)
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 class UserData(BaseModel):
     name: str
