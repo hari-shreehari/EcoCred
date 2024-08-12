@@ -163,14 +163,14 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
     
     # Calculate average recycle score
     recycle_scores = [float(recycle_score_response.data[0][month]) for month in ["Jan-Feb", "Mar-Apr", "May-Jun", "Jul-Aug", "Sep-Oct", "Nov-Dec"]]
-    average_recycle_score = sum(recycle_scores) / len(recycle_scores) if recycle_scores else 0
+    total_recycle_score = int(sum(recycle_scores) if recycle_scores else 0)
     
     # Prepare and return the response
     return {
         "status": "success",
         "user_data": user_data,
         "average_green_score": average_green_score,
-        "average_recycle_score": average_recycle_score,
+        "average_recycle_score": total_recycle_score,
         "electricity_available": is_electricity_available,
         "water_available": is_water_available,
         "lpg_available": is_lpg_available
