@@ -138,7 +138,7 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
     user_id = payload.get("sub")
     
     # Retrieve user information
-    user_response = supabase.table("Users").select("User_ID", "Name", "Email", "Electricity", "Water", "LPG").eq("User_ID", user_id).execute()
+    user_response = supabase.table("Users").select("User_ID", "Name", "Email", "Electricity", "Water", "LPG", "IOT").eq("User_ID", user_id).execute()
     
     if not user_response.data:
         return {"status": "failure", "message": "User not found"}
@@ -148,6 +148,7 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
     is_electricity_available = user_data.get("Electricity") is not None
     is_water_available = user_data.get("Water") is not None
     is_lpg_available = user_data.get("LPG") is not None
+    is_iot_available = user_data.get("IOT") is not None
     
     # Retrieve and calculate the average green score
     green_score_response = supabase.table("GreenScore").select("Jan-Feb", "Mar-Apr", "May-Jun", "Jul-Aug", "Sep-Oct", "Nov-Dec").eq("User_ID", user_id).execute()
@@ -177,7 +178,8 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
         "average_recycle_score": round(average_recycle_score, 3),
         "electricity_available": is_electricity_available,
         "water_available": is_water_available,
-        "lpg_available": is_lpg_available
+        "lpg_available": is_lpg_available,
+        "iot_available": is_iot_available
     }
 
       
