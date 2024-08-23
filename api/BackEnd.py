@@ -56,6 +56,8 @@ class UserData(BaseModel):
     water_bill_number: str
     city: str
     state: str
+    number:str
+    iot: str
 
 class SignInData(BaseModel):
     email: str
@@ -100,7 +102,9 @@ async def submit_data(user_data: UserData):
         "City": user_data.city,
         "Electricity": user_data.electricity_bill_number,
         "Water": user_data.water_bill_number,
-        "LPG": user_data.lpg_service_number
+        "LPG": user_data.lpg_service_number,
+        "Phone Number": user_data.number,
+        "IOT": user_data.iot
     }
     
     try:
