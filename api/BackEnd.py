@@ -169,8 +169,8 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
     return {
         "status": "success",
         "user_data": user_data,
-        "average_green_score": average_green_score,
-        "average_recycle_score": average_recycle_score,
+        "average_green_score": round(average_green_score, 3),
+        "average_recycle_score": round(average_recycle_score, 3),
         "electricity_available": is_electricity_available,
         "water_available": is_water_available,
         "lpg_available": is_lpg_available
